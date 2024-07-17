@@ -21,7 +21,7 @@ type server struct {
 }
 
 // Create chat
-func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+func (s *server) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	log.Printf("Create usernames: %s", req.GetUsernames())
 
 	return &desc.CreateResponse{
@@ -30,13 +30,13 @@ func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Cre
 }
 
 // Delete chat
-func (s *server) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
+func (s *server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete chat with id: %v", req.GetId())
 	return nil, nil
 }
 
 // Send message to server
-func (s *server) SendMessage(ctx context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
+func (s *server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
 	log.Printf("Send message %s from %s at %v", req.Text, req.Text, req.Timestamp)
 	return nil, nil
 }
