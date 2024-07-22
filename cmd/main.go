@@ -32,13 +32,14 @@ func (s *server) CreateChat(_ context.Context, req *desc.CreateRequest) (*desc.C
 // Delete chat
 func (s *server) DeleteChat(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete chat with id: %v", req.GetId())
+
 	return nil, nil
 }
 
 // Send message to server
 func (s *server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
 	log.Printf("Send message %s from %s at %v", req.Text, req.Text, req.Timestamp)
-	
+
 	return nil, nil
 }
 
