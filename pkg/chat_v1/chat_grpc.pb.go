@@ -31,7 +31,7 @@ const (
 type ChatV1Client interface {
 	CreateChat(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	DeleteChat(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
 }
 
 type chatV1Client struct {
@@ -62,9 +62,9 @@ func (c *chatV1Client) DeleteChat(ctx context.Context, in *DeleteRequest, opts .
 	return out, nil
 }
 
-func (c *chatV1Client) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *chatV1Client) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(SendMessageResponse)
 	err := c.cc.Invoke(ctx, ChatV1_SendMessage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (c *chatV1Client) SendMessage(ctx context.Context, in *SendMessageRequest, 
 type ChatV1Server interface {
 	CreateChat(context.Context, *CreateRequest) (*CreateResponse, error)
 	DeleteChat(context.Context, *DeleteRequest) (*emptypb.Empty, error)
-	SendMessage(context.Context, *SendMessageRequest) (*emptypb.Empty, error)
+	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
 	mustEmbedUnimplementedChatV1Server()
 }
 
@@ -92,7 +92,7 @@ func (UnimplementedChatV1Server) CreateChat(context.Context, *CreateRequest) (*C
 func (UnimplementedChatV1Server) DeleteChat(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteChat not implemented")
 }
-func (UnimplementedChatV1Server) SendMessage(context.Context, *SendMessageRequest) (*emptypb.Empty, error) {
+func (UnimplementedChatV1Server) SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedChatV1Server) mustEmbedUnimplementedChatV1Server() {}
