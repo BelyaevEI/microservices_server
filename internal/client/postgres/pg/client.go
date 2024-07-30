@@ -1,18 +1,18 @@
-package postgres
+package pg
 
 import (
 	"context"
 
-	"github.com/BelyaevEI/microservices_chat/internal/client/database"
+	"github.com/BelyaevEI/microservices_chat/internal/client/postgres"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
 type pgClient struct {
-	masterDBC database.DB
+	masterDBC postgres.DB
 }
 
-func New(ctx context.Context, dsn string) (database.Client, error) {
+func New(ctx context.Context, dsn string) (postgres.Client, error) {
 	dbc, err := pgxpool.Connect(ctx, dsn)
 	if err != nil {
 		return nil, errors.Errorf("failed to connect to db: %v", err)
@@ -23,7 +23,7 @@ func New(ctx context.Context, dsn string) (database.Client, error) {
 	}, nil
 }
 
-func (c *pgClient) DB() database.DB {
+func (c *pgClient) DB() postgres.DB {
 	return c.masterDBC
 }
 

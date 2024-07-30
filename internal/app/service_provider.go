@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/BelyaevEI/microservices_chat/internal/client/database"
 	"github.com/BelyaevEI/microservices_chat/internal/client/postgres"
 	"github.com/BelyaevEI/microservices_chat/internal/closer"
 	"github.com/BelyaevEI/microservices_chat/internal/config"
@@ -13,7 +14,7 @@ type serviceProvider struct {
 	pgConfig   config.PGConfig
 	grpcConfig config.GRPCConfig
 
-	pgClient       postgres.Client
+	pgClient       database.Client
 	txManager      db.TxManager
 	noteRepository repository.NoteRepository
 

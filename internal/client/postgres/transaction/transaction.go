@@ -3,27 +3,27 @@ package transaction
 import (
 	"context"
 
-	"github.com/BelyaevEI/microservices_chat/internal/client/database"
 	"github.com/BelyaevEI/microservices_chat/internal/client/postgres"
+	"github.com/BelyaevEI/microservices_chat/internal/client/postgres/pg"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
 )
 
 type manager struct {
-	db database.Transactor
+	db postgres.Transactor
 }
 
 // NewTransactionManager создает новый менеджер транзакций, который удовлетворяет интерфейсу db.TxManager
-func NewTransactionManager(db database.Transactor) database.TxManager {
+func NewTransactionManager(db postgres.Transactor) postgres.TxManager {
 	return &manager{
 		db: db,
 	}
 }
 
 // transaction основная функция, которая выполняет указанный пользователем обработчик в транзакции
-func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn database.Handler) (err error) {
+func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn postgres.Handler) (err error) {
 	// Если это вложенная транзакция, пропускаем инициацию новой транзакции и выполняем обработчик.
-	tx, ok := ctx.Value(postgres.TxKey).(pgx.Tx)
+	tx, ok := ctx.Value(pg.TxKey).(pgx.Tx)
 	if ok {
 		return fn(ctx)
 	}
@@ -35,7 +35,7 @@ func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn databa
 	}
 
 	// Кладем транзакцию в контекст.
-	ctx = postgres.MakeContextTx(ctx, tx)
+	ctx = pg.MakeContextTx(ctx, tx)
 
 	// Настраиваем функцию отсрочки для отката или коммита транзакции.
 	defer func() {
@@ -72,7 +72,7 @@ func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn databa
 	return err
 }
 
-func (m *manager) ReadCommitted(ctx context.Context, f database.Handler) error {
+func (m *manager) ReadCommitted(ctx context.Context, f postgres.Handler) error {
 	txOpts := pgx.TxOptions{IsoLevel: pgx.ReadCommitted}
 	return m.transaction(ctx, txOpts, f)
 }
