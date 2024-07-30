@@ -2,20 +2,16 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
-	"net"
 	"os"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"github.com/BelyaevEI/microservices_server/internal/config"
+	"github.com/BelyaevEI/microservices_server/internal/app"
 	desc "github.com/BelyaevEI/microservices_server/pkg/chat_v1"
 	sq "github.com/Masterminds/squirrel"
 )
@@ -121,41 +117,14 @@ func (s *server) SendMessage(ctx context.Context, req *desc.SendMessageRequest) 
 func main() {
 
 	ctx := context.Background()
-	flag.Parse()
 
-	err := config.Load(configPath)
+	app, err := app.NewApp(ctx)
 	if err != nil {
-		log.Fatalf("load config is failed: %v", err)
+		log.Fatalf("failed to init app: %s", err.Error())
 	}
 
-	grpcConfig, err := config.NewGRPCConfig()
+	err = app.Run()
 	if err != nil {
-		log.Fatalf("failed to get grpc config: %v", err)
-	}
-
-	pgConfig, err := config.NewPGConfig()
-	if err != nil {
-		log.Fatalf("failed to get pg config: %v", err)
-	}
-
-	lis, err := net.Listen("tcp", grpcConfig.Address())
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-
-	pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
-	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
-	}
-	defer pool.Close()
-
-	s := grpc.NewServer()
-	reflection.Register(s)
-	desc.RegisterChatV1Server(s, &server{pool: pool})
-
-	log.Printf("server listening at %v", lis.Addr())
-
-	if err = s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("failed to run app: %s", err.Error())
 	}
 }
