@@ -4,23 +4,28 @@ import (
 	"context"
 	"log"
 
-	"github.com/BelyaevEI/microservices_chat/internal/client/database"
+	"github.com/BelyaevEI/microservices_chat/internal/api/chat"
 	"github.com/BelyaevEI/microservices_chat/internal/client/postgres"
+	"github.com/BelyaevEI/microservices_chat/internal/client/postgres/pg"
+	"github.com/BelyaevEI/microservices_chat/internal/client/postgres/transaction"
 	"github.com/BelyaevEI/microservices_chat/internal/closer"
 	"github.com/BelyaevEI/microservices_chat/internal/config"
+	"github.com/BelyaevEI/microservices_chat/internal/repository"
+	chatRepository "github.com/BelyaevEI/microservices_chat/internal/repository/chat"
+	"github.com/BelyaevEI/microservices_chat/internal/service"
+	chatService "github.com/BelyaevEI/microservices_chat/internal/service/chat"
 )
 
 type serviceProvider struct {
 	pgConfig   config.PGConfig
 	grpcConfig config.GRPCConfig
 
-	pgClient       database.Client
-	txManager      db.TxManager
-	noteRepository repository.NoteRepository
+	pgClient  postgres.Client
+	txManager postgres.TxManager
 
-	noteService service.NoteService
-
-	noteImpl *note.Implementation
+	chatImpl       *chat.Implementation
+	chatRepository repository.ChatRepository
+	chatService    service.ChatService
 }
 
 func newServiceProvider() *serviceProvider {
@@ -56,7 +61,7 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 
 func (s *serviceProvider) PostgresClient(ctx context.Context) postgres.Client {
 	if s.pgClient == nil {
-		client, err := postgres.New(ctx, s.PGConfig().DSN())
+		client, err := pg.New(ctx, s.PGConfig().DSN())
 		if err != nil {
 			log.Fatalf("failed to create db client: %v", err)
 		}
@@ -71,4 +76,39 @@ func (s *serviceProvider) PostgresClient(ctx context.Context) postgres.Client {
 	}
 
 	return s.pgClient
+}
+
+func (s *serviceProvider) ChatImpl(ctx context.Context) *chat.Implementation {
+	if s.chatImpl == nil {
+		s.chatImpl = chat.NewImplementation(s.ChatService(ctx))
+	}
+
+	return s.chatImpl
+}
+
+func (s *serviceProvider) ChatService(ctx context.Context) service.ChatService {
+	if s.chatService == nil {
+		s.chatService = chatService.NewService(
+			s.ChatRepository(ctx),
+			s.TxManager(ctx),
+		)
+	}
+
+	return s.chatService
+}
+
+func (s *serviceProvider) ChatRepository(ctx context.Context) repository.ChatRepository {
+	if s.chatRepository == nil {
+		s.chatRepository = chatRepository.NewRepository(s.PostgresClient(ctx))
+	}
+
+	return s.chatRepository
+}
+
+func (s *serviceProvider) TxManager(ctx context.Context) postgres.TxManager {
+	if s.txManager == nil {
+		s.txManager = transaction.NewTransactionManager(s.PostgresClient(ctx).DB())
+	}
+
+	return s.txManager
 }
