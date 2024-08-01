@@ -8,7 +8,7 @@ import (
 	desc "github.com/BelyaevEI/microservices_chat/pkg/chat_v1"
 )
 
-// Create creates a new chat
+// CreateChat creates a new chat
 func (i *Implementation) CreateChat(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	id, err := i.chatService.CreateChat(ctx, converter.ToChatCreateFromDesc(req))
 	if err != nil {
