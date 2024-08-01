@@ -7,5 +7,11 @@ import (
 )
 
 func (s *serv) SendMessage(ctx context.Context, createMessage *model.MessageCreate) (string, error) {
-	return "", nil
+	var id string
+
+	id, err := s.chatRepository.SendMessage(ctx, createMessage)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
 }

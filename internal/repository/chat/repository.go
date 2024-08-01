@@ -5,12 +5,17 @@ import (
 	"github.com/BelyaevEI/microservices_chat/internal/repository"
 )
 
-// const (
-// 	tableName  = "chat"
-// 	idColumn   = "id"
-// 	nameColumn = "name"
-// 	user_ids   = "user_ids"
-// )
+const (
+	tableName  = "chat"
+	idColumn   = "id"
+	nameColumn = "name"
+	user_ids   = "user_ids"
+
+	tableNameMessage = "message"
+	chatIDColumn     = "chat_id"
+	userIDColumn     = "user_id"
+	textColumn       = "text"
+)
 
 type repo struct {
 	db postgres.Client

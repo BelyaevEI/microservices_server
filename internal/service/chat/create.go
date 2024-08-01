@@ -7,5 +7,12 @@ import (
 )
 
 func (s *serv) CreateChat(ctx context.Context, createChat *model.ChatCreate) (int64, error) {
-	return 0, nil
+	var id int64
+
+	id, err := s.chatRepository.CreateChat(ctx, createChat)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
