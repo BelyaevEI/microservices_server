@@ -13,11 +13,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// App represents the app.
 type App struct {
 	serviceProvider *serviceProvider
 	grpcServer      *grpc.Server
 }
 
+// Run runs the app.
 func (a *App) Run() error {
 	// Gracefull shutdown
 	defer func() {
@@ -28,6 +30,7 @@ func (a *App) Run() error {
 	return a.runGRPCServer()
 }
 
+// NewApp creates a new app.
 func NewApp(ctx context.Context) (*App, error) {
 	a := &App{}
 

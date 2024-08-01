@@ -11,6 +11,7 @@ type serv struct {
 	txManager      postgres.TxManager
 }
 
+// NewService creates a new chat service.
 func NewService(chatRepository repository.ChatRepository, txManager postgres.TxManager) service.ChatService {
 	return &serv{
 		chatRepository: chatRepository,

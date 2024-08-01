@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	PlaceholderDollar   = "$"
-	PlaceholderQuestion = "?"
+	PlaceholderDollar   = "$" // PlaceholderDollar represents the placeholder used in SQL queries for dollar sign syntax
+	PlaceholderQuestion = "?" // PlaceholderQuestion represents the placeholder used in SQL queries for question mark syntax
 )
 
+// Pretty returns a prettier SQL query
 func Pretty(query string, placeholder string, args ...any) string {
 	for i, param := range args {
 		var value string

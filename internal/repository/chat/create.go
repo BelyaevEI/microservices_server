@@ -13,8 +13,8 @@ func (r *repo) CreateChat(ctx context.Context, createChat *model.ChatCreate) (in
 
 	builderInsert := sq.Insert(tableName).
 		PlaceholderFormat(sq.Dollar).
-		Columns(nameColumn).
-		Values(createChat.Name).
+		Columns(nameColumn, userIds).
+		Values(createChat.Name, createChat.UserID).
 		Suffix("RETURNING id")
 
 	query, args, err := builderInsert.ToSql()

@@ -16,13 +16,14 @@ import (
 type key string
 
 const (
-	TxKey key = "tx"
+	TxKey key = "tx" // TxKey is a constant key used to store and retrieve a transaction object in context.Context
 )
 
 type pg struct {
 	dbc *pgxpool.Pool
 }
 
+// NewDB creates a new database connection using the provided pgxpool.Pool and returns a db.DB interface.
 func NewDB(dbc *pgxpool.Pool) postgres.DB {
 	return &pg{
 		dbc: dbc,
@@ -105,6 +106,7 @@ func (p *pg) Close() {
 	p.dbc.Close()
 }
 
+// the new context with the transaction object attached
 func MakeContextTx(ctx context.Context, tx pgx.Tx) context.Context {
 	return context.WithValue(ctx, TxKey, tx)
 }
