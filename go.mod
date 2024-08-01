@@ -1,6 +1,6 @@
 module github.com/BelyaevEI/microservices_chat
 
-go 1.22.2
+go 1.22
 
 require (
 	github.com/BelyaevEI/microservices_server v0.0.0-20240728181915-bf2c908d539d
