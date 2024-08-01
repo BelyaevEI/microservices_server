@@ -9,7 +9,7 @@ const (
 	tableName  = "chat"
 	idColumn   = "id"
 	nameColumn = "name"
-	userIds    = "user_ids"
+	userIDs    = "user_ids"
 
 	tableNameMessage = "message"
 	chatIDColumn     = "chat_id"

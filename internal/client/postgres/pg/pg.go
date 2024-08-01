@@ -106,7 +106,7 @@ func (p *pg) Close() {
 	p.dbc.Close()
 }
 
-// the new context with the transaction object attached
+// MakeContextTx the new context with the transaction object attached
 func MakeContextTx(ctx context.Context, tx pgx.Tx) context.Context {
 	return context.WithValue(ctx, TxKey, tx)
 }
